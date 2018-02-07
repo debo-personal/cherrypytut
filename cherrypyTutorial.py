@@ -5,7 +5,17 @@ import string
 class HelloWorld(object):
     @cherrypy.expose
     def index(self):
-        return "Hello World!"
+        return '''
+        <html>
+            <head></head>
+            <body>
+                <form action="generate" method="GET">
+                    <input type="text" name="length" value="8"/>
+                    <button type="submit">Submit</button>
+                </form>
+            </body>
+        </html>
+        '''
     
     @cherrypy.expose
     def generate(self, length=8):
