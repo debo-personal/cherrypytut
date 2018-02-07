@@ -19,7 +19,18 @@ class HelloWorld(object):
     
     @cherrypy.expose
     def generate(self, length=8):
-        return ''.join(random.sample(string.hexdigits, int(length)))
+        random_string = ''.join(random.sample(string.hexdigits, int(length)))
+        cherrypy.session['random_string'] = random_string
+        return random_string
+
+    @cherrypy.expose
+    def display(self):
+        return cherrypy.session['random_string']
 
 if __name__ == '__main__':
-    cherrypy.quickstart(HelloWorld())
+    conf = {
+        '/' : {
+            'tools.sessions.on' : True
+        }
+    }
+    cherrypy.quickstart(HelloWorld(), '/', conf)
