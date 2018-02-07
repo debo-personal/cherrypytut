@@ -1,6 +1,12 @@
+import os, os.path
 import string 
 import random
 import cherrypy
+
+class StringGenerator(object):
+    @cherrypy.expose
+    def index(self):
+        return open('index.html')
 
 @cherrypy.expose
 class StringGeneratorWebService(object):
@@ -23,9 +29,18 @@ if __name__ == '__main__':
     conf = {
         '/' : {
             'tools.sessions.on' : True,
+            'tools.staticdir.root' : os.path.abspath(os.getcwd())
+        },
+        '/generator' : {
             'tools.response_headers.on' : True,
             'tools.response_headers.headers' : [('Content-Type', 'text/plain')],
             'request.dispatch' : cherrypy.dispatch.MethodDispatcher()
+        },
+        '/static' : {
+            'tools.staticdir.on' : True,
+            'tools.staticdir.dir' : './public'
         }
     }
-    cherrypy.quickstart(StringGeneratorWebService(), '/', conf)
+    webapp = StringGenerator()
+    webapp.generator = StringGeneratorWebService()
+    cherrypy.quickstart(webapp, '/', conf)
