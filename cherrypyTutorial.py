@@ -1,3 +1,4 @@
+import os, os.path
 import cherrypy
 import random
 import string
@@ -7,7 +8,9 @@ class HelloWorld(object):
     def index(self):
         return '''
         <html>
-            <head></head>
+            <head>
+                <link href="/static/css/style.css" rel="stylesheet">
+            </head>
             <body>
                 <form action="generate" method="GET">
                     <input type="text" name="length" value="8"/>
@@ -30,7 +33,12 @@ class HelloWorld(object):
 if __name__ == '__main__':
     conf = {
         '/' : {
-            'tools.sessions.on' : True
+            'tools.sessions.on' : True,
+            'tools.staticdir.root' : os.path.abspath(os.getcwd())
+        },
+        '/static' : {
+            'tools.staticdir.on' : True,
+            'tools.staticdir.dir' : './public'
         }
     }
     cherrypy.quickstart(HelloWorld(), '/', conf)
